@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>AES Encryption/Decryption</title>
+    <style>
+        body { font-family: sans-serif; }
+        .container { display: flex; flex-wrap: wrap; justify-content: space-around;}
+        .column { width: 48%; padding: 20px; margin-bottom: 20px; box-sizing: border-box; }
+        .form-group { display: flex; align-items: center; margin-bottom: 10px; }
+        .form-group label { width: 150px; margin-right: 10px; }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        select, input[type="text"], input[type="radio"] {
+            width: calc(100% - 160px);
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        textarea { width: calc(100%); padding: 10px; box-sizing: border-box; min-height: 100px; margin-bottom: 10px; }
+        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 4px;}
+        button:hover {background-color: #45a049;}
+        h2 { margin-top: 0; }
+        .result-area {margin-top: 20px;}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="column">
+        <h2>AES Encryption</h2>
+        <form th:action="@{/encrypt}" th:object="${requestContainer.encryptionRequest}" method="post">
+            <div class="result-area">
+                <label for="encryptText"></label>
+                <textarea th:field="*{plainText}" id="encryptText" rows="4" placeholder="Enter text to encrypt:" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="encryptKeySize">Key Size in Bits:</label>
+                <select id="encryptKeySize" th:field="*{keySize}">
+                    <option value="128">128</option>
+                    <option value="192">192</option>
+                    <option value="256">256</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="encryptSecretKey">Secret key:</label>
+                <input type="text" th:field="*{secretKey}" id="encryptSecretKey" placeholder="Enter Secret key" required>
+            </div>
+
+            <div class="form-group">
+                <label for="encryptOutputFormat">Output Text Format:</label>
+                <select th:field="*{outputFormat}" id="encryptOutputFormat">
+                    <option value="Base64">Base64</option>
+                    <option value="Hex">Hex</option>
+                </select>
+            </div>
+
+            <button type="submit">Encrypt</button>
+        </form>
+        <div class="result-area">
+            <label for="encryptResult"></label>
+            <textarea id="encryptResult" th:text="${requestContainer.encryptionResult}" rows="4" placeholder="Encryption result" readonly></textarea>
+        </div>
+        <div th:if="${requestContainer.encryptionError}" class="error-message">
+            <p th:text="${requestContainer.encryptionError}"></p>
+        </div>
+    </div>
+    <div class="column">
+        <h2>AES Decryption</h2>
+        <form th:action="@{/decrypt}" th:object="${requestContainer.decryptionRequest}" method="post">
+            <div class="result-area">
+                <label for="cipherText"></label><textarea th:field="*{cipherText}" id="cipherText" rows="4" placeholder="Enter text to encrypt:" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="decryptKeySize">Key Size in Bits:</label>
+                <select id="decryptKeySize" th:field="*{keySize}">
+                    <option value="128">128</option>
+                    <option value="192">192</option>
+                    <option value="256">256</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="decryptSecretKey">Secret key:</label>
+                <input type="text" th:field="*{secretKey}" id="decryptSecretKey" placeholder="Enter Secret key" required>
+            </div>
+
+            <div class="form-group">
+                <label for="decryptOutputFormat">Output Text Format:</label>
+                <select th:field="*{outputFormat}" id="decryptOutputFormat">
+                    <option value="Base64">Base64</option>
+                    <option value="Plaintext">Plaintext</option>
+                </select>
+            </div>
+
+            <button type="submit">Decrypt</button>
+        </form>
+        <div class="result-area">
+            <label for="decryptResult"></label>
+            <textarea id="decryptResult" th:text="${requestContainer.decryptionResult}" rows="4" placeholder="Decryption Result" readonly></textarea>
+        </div>
+        <div th:if="${requestContainer.decryptionError}" class="error-message">
+            <p th:text="${requestContainer.decryptionError}"></p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
