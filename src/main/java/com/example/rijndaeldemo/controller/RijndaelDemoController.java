@@ -14,14 +14,19 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/")
 @RequiredArgsConstructor
+@SessionAttributes("requestContainer")
 @Slf4j
 public class RijndaelDemoController {
     private final RijndaelCipherService cipherService;
     private final RequestContainer requestContainer;
     @GetMapping
     public String home(Model model) {
-        model.addAttribute("requestContainer", requestContainer);
         return "aes-demo";
+    }
+
+    @ModelAttribute("requestContainer")
+    public RequestContainer createRequestcontainer() {
+        return new RequestContainer();
     }
 
     @PostMapping("/encrypt")
@@ -36,7 +41,6 @@ public class RijndaelDemoController {
                     request.getPlainText(), request.getSecretKey()));
             requestContainer.setEncryptionError(e.getMessage());
         }
-        model.addAttribute("requestContainer", requestContainer);
         return "aes-demo";
     }
 
@@ -52,7 +56,6 @@ public class RijndaelDemoController {
                     request.getCipherText(), request.getSecretKey()));
             requestContainer.setDecryptionError(e.getMessage());
         }
-        model.addAttribute("requestContainer", requestContainer);
         return "aes-demo";
     }
 }
